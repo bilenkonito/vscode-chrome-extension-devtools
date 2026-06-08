@@ -1,17 +1,16 @@
 const vscode = acquireVsCodeApi();
 
-window.addEventListener("message", (data) => {
+window.addEventListener("message", data => {
     var res = data.data;
 
     if (res.status === "GIVE") {
-        document.getElementById("location_value").innerText = res.message.path;
+        document.getElementById("location_label").innerHTML = res.message.path;
     } else if (res.status === "ERR") {
-        document.getElementById("loading").style.display = "none";
+        document.querySelector(".loading").style.display = "none";
         document.getElementById("project_name").removeAttribute("disabled");
         document.getElementById("extension_type").removeAttribute("disabled");
         document.getElementById("choose_location").removeAttribute("disabled");
         document.getElementById("submit").removeAttribute("disabled");
-        document.getElementById("submit-btn-container").style.display = "flex";
     } else if (res.status === "LOAD") {
         document.getElementById("loader").innerHTML += "\n" + res.message;
     }
@@ -27,7 +26,7 @@ function getLocation() {
 function submit() {
     let projectName = document.getElementById("project_name").value;
     let extensionType = document.getElementById("extension_type").value;
-    let chosenPath = document.getElementById("location_value").innerText;
+    let chosenPath = document.getElementById("location_label").innerHTML.replace("Location: ", "");
 
     document.getElementById("project_name").setAttribute("disabled", "");
     document.getElementById("extension_type").setAttribute("disabled", "");
@@ -45,8 +44,7 @@ function submit() {
         return;
     }
 
-    document.getElementById("submit-btn-container").style.display = "none";
-    document.getElementById("loading").style.display = "block";
+    document.querySelector(".loading").style.visibility = "visible";
 
     vscode.postMessage({
         status: "OK",
@@ -58,8 +56,8 @@ function submit() {
     });
 }
 
-(async function () {
-    let loadingText = document.getElementById("loading_text");
+(async function() {
+    let loadingText = document.querySelector(".loading_text");
     let ellipsisDotCount = 1;
     setInterval(() => {
         if (ellipsisDotCount > 2) {
@@ -69,5 +67,5 @@ function submit() {
             loadingText.innerHTML += ".";
             ellipsisDotCount++;
         }
-    }, 1000);
+    }, 500);
 })();
